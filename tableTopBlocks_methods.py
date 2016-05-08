@@ -9,14 +9,19 @@ import pyhop
 """
 Here are some helper functions that are used in the methods' preconditions.
 """
+# CHECKS TO SEE IF BLOCK IS WHERE IT IS SUPPOSED TO BE
+#def is_done(b1, state, goal):
+#    if b1 in goal.locContents.values() and locContents
 
-def is_done(b1,state,goal):
-    if b1 == 'table': return True
-    if b1 in goal.pos and goal.pos[b1] != state.pos[b1]:
-        return False
-    if state.pos[b1] == 'table': return True
-    return is_done(state.pos[b1],state,goal)
 
+#def is_done(b1,state,goal):
+#    if b1 == 'table': return True
+#    if b1 in goal.pos and goal.pos[b1] != state.pos[b1]:
+#        return False
+#    if state.pos[b1] == 'table': return True
+#    return is_done(state.pos[b1],state,goal)
+
+# GIVES BLOCKS STATUSES
 def status(b1,state,goal):
     if is_done(b1,state,goal):
         return 'done'
@@ -30,7 +35,7 @@ def status(b1,state,goal):
         return 'waiting'
 
 def all_blocks(state):
-    return state.clear.keys()
+    return state.locContents.values()
 
 
 """
@@ -39,7 +44,7 @@ In each Pyhop planning method, the first argument is the current state (this is 
 
 ### methods for "move_blocks"
 
-def moveb_m(state,goal):
+def moveBlocks_m(state,goal):
     """
     This method implements the following block-stacking algorithm:
     If there's a block that can be moved to its final position, then
@@ -48,38 +53,45 @@ def moveb_m(state,goal):
     do so and call move_blocks recursively. Otherwise, no blocks need
     to be moved.
     """
-    for b1 in all_blocks(state):
-        s = status(b1,state,goal)
-        if s == 'move-to-table':
-            return [('move_one',b1,'table'),('move_blocks',goal)]
-        elif s == 'move-to-block':
-            return [('move_one',b1,goal.pos[b1]), ('move_blocks',goal)]
-        else:
-            continue
-    #
-    # if we get here, no blocks can be moved to their final locations
-    b1 = pyhop.find_if(lambda x: status(x,state,goal) == 'waiting', all_blocks(state))
-    if b1 != None:
-        return [('move_one',b1,'table'), ('move_blocks',goal)]
-    #
-    # if we get here, there are no blocks that need moving
-    return []
+
+
+
+
+
+
+    # OLD METHODS WHICH ALLOWS FOR BLOCK STACKING
+    #for loc in all_blocks(state):
+    #    s = status(b1,state,goal)
+    #    if s == 'move-to-table':
+    #        return [('moveOne',b1,'table'),('moveBlocks',goal)]
+    #    elif s == 'move-to-block':
+    #        return [('moveOne',b1,goal.pos[b1]), ('moveBlocks',goal)]
+    #    else:
+    #        continue
+    ##
+    ## if we get here, no blocks can be moved to their final locations
+    #b1 = pyhop.find_if(lambda x: status(x,state,goal) == 'waiting', all_blocks(state))
+    #if b1 != None:
+    #    return [('moveOne',b1,'table'), ('moveBlocks',goal)]
+    ##
+    ## if we get here, there are no blocks that need moving
+    #return []
 
 """
 declare_methods must be called once for each taskname. Below, 'declare_methods('get',get_m)' tells Pyhop that 'get' has one method, get_m. Notice that 'get' is a quoted string, and get_m is the actual function.
 """
-pyhop.declare_methods('move_blocks',moveb_m)
+pyhop.declare_methods('moveBlocks',moveBlocks_m)
 
 
 ### methods for "move_one"
 
-def move1(state,locI,locF):
+def moveOne_m(state,locI,locF):
     """
     Generate subtasks to get b1 and put it at dest.
     """
-    return [('moveRobot', locI),('pickup', locI), ('moveRobot', locF), ('putdown', locF)]
+    return [('moveRobot', locI),('pickUp', locI), ('moveRobot', locF), ('putDown', locF)]
 
-pyhop.declare_methods('move_one',move1)
+pyhop.declare_methods('moveOne',moveOne_m)
 
 
 ### methods for "get"

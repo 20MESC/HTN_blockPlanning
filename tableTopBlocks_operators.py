@@ -12,23 +12,26 @@ the first argument is always the name of the class instance). For example,
 the function pickup(state,b) implements the planning operator for the task
 ('pickup', b).
 
-The blocks-world operators use three state variables:
-- pos[b] = block b's position, which may be 'table', 'hand', or another block.
-- clear[b] = False if a block is on b or the hand is holding b, else True.
+The blocks-world operators state variables:
+- locContents[loc] = what is contained at loc given by (x,y) 
+- locOccupied[loc] = Boolean describing whether there is something occupying loc (x,y)
+- locRobot = loc in (x,y) at which the robot is currently located
 - holding = name of the block being held, or False if the hand is empty.
 """
 
-def pickup(state, loc):
+def pickUp(state, loc):
     # if robot at loc AND robot not holding anything AND loc has something to pickup
     if  not state.holding  and state.locOccupied[loc]:
         #state.loc[b] = 'hand'
         state.locOccupied[loc] = False 
         state.holding = state.locContents[loc] 
+        # be sure to delete old contents once they are picked up!
+        del state.locContents[loc]
         print(state.holding)
         return state
     else: return False
 
-def putdown(state, loc):
+def putDown(state, loc):
     if state.holding:
         state.locContents[loc] = state.holding
         state.holding = ""
@@ -63,4 +66,4 @@ Below, 'declare_operators(pickup, unstack, putdown, stack)' tells Pyhop
 what the operators are. Note that the operator names are *not* quoted.
 """
 
-pyhop.declare_operators(moveRobot,pickup,putdown)
+pyhop.declare_operators(moveRobot,pickUp,putDown)

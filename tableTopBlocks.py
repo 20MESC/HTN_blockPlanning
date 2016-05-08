@@ -50,9 +50,8 @@ g1.locOccupied.update({(1,3):True, (2,3):True}) # make sure these reflect the oc
 print_goal(g1)
 print('')
 
+
+pyhop(s1,[('moveBlocks',g1)], verbose=1)
+
 import ipdb
-ipdb.set_trace()
-
-pyhop(s1,[('moveOne',(1,1),(1,3))], verbose=2)
-
 ipdb.set_trace()

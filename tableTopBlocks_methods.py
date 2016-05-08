@@ -10,29 +10,33 @@ import pyhop
 Here are some helper functions that are used in the methods' preconditions.
 """
 # CHECKS TO SEE IF BLOCK IS WHERE IT IS SUPPOSED TO BE
-#def is_done(b1, state, goal):
-#    if b1 in goal.locContents.values() and locContents
-
-
-#def is_done(b1,state,goal):
-#    if b1 == 'table': return True
-#    if b1 in goal.pos and goal.pos[b1] != state.pos[b1]:
-#        return False
-#    if state.pos[b1] == 'table': return True
-#    return is_done(state.pos[b1],state,goal)
+def is_done(b1,state,goal):
+    if b1 in goal.locContents.values() and goal.locContents.inv[b1] != state.locContents.inv[b1]:
+        return False
+    else:
+        return True
 
 # GIVES BLOCKS STATUSES
 def status(b1,state,goal):
     if is_done(b1,state,goal):
         return 'done'
-    elif not state.clear[b1]:
-        return 'inaccessible'
-    elif not (b1 in goal.pos) or goal.pos[b1] == 'table':
+    elif not state.locOccupied[goal.locContents.inv[b1]]:
         return 'move-to-table'
-    elif is_done(goal.pos[b1],state,goal) and state.clear[goal.pos[b1]]:
-        return 'move-to-block'
     else:
         return 'waiting'
+
+# OLD STATUS WHICH ALLOWS FOR BLOCK STACKING LOGIC
+#def status(b1,state,goal):
+#    if is_done(b1,state,goal):
+#        return 'done'
+#    elif not state.clear[b1]:
+#        return 'inaccessible'
+#    elif not (b1 in goal.pos) or goal.pos[b1] == 'table':
+#        return 'move-to-table'
+#    elif is_done(goal.pos[b1],state,goal) and state.clear[goal.pos[b1]]:
+#        return 'move-to-block'
+#    else:
+#        return 'waiting'
 
 def all_blocks(state):
     return state.locContents.values()
@@ -44,6 +48,8 @@ In each Pyhop planning method, the first argument is the current state (this is 
 
 ### methods for "move_blocks"
 
+# Currently being handled by checking occupied space -> Finding the blocks in each occupied space -> Checking status of block -> Check if its part of goal -> If it needs to be moved, move it
+# TODO: There might be a more concise way to address this.
 def moveBlocks_m(state,goal):
     """
     This method implements the following block-stacking algorithm:
@@ -53,8 +59,19 @@ def moveBlocks_m(state,goal):
     do so and call move_blocks recursively. Otherwise, no blocks need
     to be moved.
     """
+    # for each currently occupied location (keys will only list these since we delete and add keys so that only currently occupied locations are a valid key)
+    for loc in state.locContents.keys():
+        b1 = state.locContents[loc]
+        s = status(b1,state,goal)
+        if s == 'move-to-table':
+            return [('moveOne',loc,goal.locContents.inv[b1]),('moveBlocks',goal)]
+        else:
+            continue
+    
+    ## here is where calls to address blocks would go
 
-
+    ## no more blocks need moving
+    return []
 
 
 

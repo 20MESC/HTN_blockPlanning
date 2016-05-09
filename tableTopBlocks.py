@@ -48,6 +48,8 @@ print("- Define state1:")
 s1 = State('state1')
 # Locations will be in standard graph axes and ordered pairs (x,y)
 s1.locContents = bidict({(1,3):'b1',(2,3):'b2',(3,3):'b3',(4,3):'b4',(5,3):'b5'}) # (1,1) holds b1, (1,2) holds b2
+# TODO: Definitely come up with alternate solution to available blocks list - probably block status
+s1.blocksAvail = s1.locContents.values()
 # Could maybe at some point replace this by just checking if the key exists in loc?
 s1.locOccupied = {(x,y):False for x in range(1,6) for y in range(1,6)}
 s1.locOccupied.update({loc:True for loc in s1.locContents.keys()}) # make sure these reflect the occupied locs
@@ -69,7 +71,7 @@ print_goal(g1)
 print('')
 
 
-result = pyhop(s1,[('createLine',(1,1),(1,3))], verbose=1)
+result = pyhop(s1,[('createLine',(3,3),(3,4))], verbose=1)
 
 import ipdb
 ipdb.set_trace()

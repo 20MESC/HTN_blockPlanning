@@ -7,6 +7,7 @@ import pyhop
 from pyhop import Goal
 from bidict import bidict
 from tableTopBlocks_utils import get_line
+import math
 
 """
 Here are some helper functions that are used in the methods' preconditions.
@@ -108,6 +109,9 @@ def moveOne_m(state,locI,locF):
     """
     Generate subtasks to get b1 and put it at dest.
     """
+    #TODO: POTENTIALLY CHANGE WHERE THIS EFFECT HAPPENS
+    # when a block is moved to its final resting place, it should be removed from blocksAvail list
+    state.blocksAvail.remove(state.locContents[locI])
     return [('moveRobot', locI),('pickUp', locI), ('moveRobot', locF), ('putDown', locF)]
 
 pyhop.declare_methods('moveOne',moveOne_m)
@@ -119,10 +123,13 @@ def createLine_m(state,pI,pF):
     """
     Generate subtasks to create a line starting at loc given by pI and ending at loc given by pF.
     """ 
+    #TODO: CHECK BOUNDS
+
     # uses Bresenham's Line Algorithm to compute discrete points for line
     linePointsList = get_line(pI,pF)
-    # acquires list of all blocks on table from looking at all unique values mapped to locations
-    blocksList = state.locContents.values() 
+    #TODO: Alternate Method
+    # Currently filters available blocks by first n (n is number of points on linePointsList) 
+    blocksList = state.blocksAvail[0:len(linePointsList)] 
 
     gL = Goal('goalLine')
     gL.locContents = bidict(zip(linePointsList,blocksList))
@@ -134,6 +141,27 @@ def createLine_m(state,pI,pF):
 pyhop.declare_methods('createLine',createLine_m)
 
 
+def createRect_m(state,center,sideLen1,sideLen2):
+    """
+    Generate subtasks to create a rectangle centered around 'center' with side lengths 'sideLen' .
+    """ 
+    # Compute Vertices
+    cx = center[0]
+    cy = center[1]
+    v1 = (int(cx-math.floor(sideLen1/2.0)),int(cy-math.floor(sideLen2/2.0))) 
+    v2 = (int(cx-math.floor(sideLen1/2.0)),int(cy+math.ceil(sideLen2/2.0))) 
+    v3 = (int(cx+math.ceil(sideLen1/2.0)),int(cy+math.ceil(sideLen2/2.0))) 
+    v4 = (int(cx+math.ceil(sideLen1/2.0)),int(cy-math.floor(sideLen2/2.0))) 
+
+    
+    # TODO: CHECK BOUNDS
+    
+    return [('createLine',v1,v2),('createLine',v2,v3),('createLine',v3,v4),('createLine',v4,v1)]
+     
+    
+
+
+pyhop.declare_methods('createRect',createRect_m)
 
 
 

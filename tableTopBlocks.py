@@ -28,14 +28,17 @@ Define Init State, Goal State, and run planner
 Init:
 (1,3) : b1
 (2,3) : b2
+(3,3) : b3
+(4,3) : b4
+(5,3) : b5
 (3,3) : robot
 
 Goal:
 createLine((1,1),(1,3))
 consists of:
-(1,1) : b1
-(1,2) : b2
-(1,3) : b3
+(1,1) : b
+(1,2) : b
+(1,3) : b
 
 """
 

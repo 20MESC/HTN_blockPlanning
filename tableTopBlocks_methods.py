@@ -148,6 +148,8 @@ def createRect_m(state,center,sideLen1,sideLen2):
     # Compute Vertices
     cx = center[0]
     cy = center[1]
+    sideLen1 = sideLen1 - 1
+    sideLen2 = sideLen2 - 1
     v1 = (int(cx-math.floor(sideLen1/2.0)),int(cy-math.floor(sideLen2/2.0))) 
     v2 = (int(cx-math.floor(sideLen1/2.0)),int(cy+math.ceil(sideLen2/2.0))) 
     v3 = (int(cx+math.ceil(sideLen1/2.0)),int(cy+math.ceil(sideLen2/2.0))) 

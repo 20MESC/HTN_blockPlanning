@@ -4,7 +4,9 @@ Author: Rosario Scalise, April 30, 2016
 """
 
 import pyhop
-
+from pyhop import Goal
+from bidict import bidict
+from tableTopBlocks_utils import get_line
 
 """
 Here are some helper functions that are used in the methods' preconditions.
@@ -109,6 +111,34 @@ def moveOne_m(state,locI,locF):
     return [('moveRobot', locI),('pickUp', locI), ('moveRobot', locF), ('putDown', locF)]
 
 pyhop.declare_methods('moveOne',moveOne_m)
+
+
+##### BELOW ARE METHODS FOR FORMING SHAPE COMPONENTS AND SHAPES
+
+def createLine_m(state,pI,pF):
+    """
+    Generate subtasks to create a line starting at loc given by pI and ending at loc given by pF.
+    """ 
+    linePointsList = get_line(pI,pF)
+    blocksList = ['b1','b2','b3']
+
+    gL = Goal('goalLine')
+    gL.locContents = bidict(zip(linePointsList,blocksList))
+    gL.locOccupied = {(x,y):False for x in range(1,4) for y in range(1,4)}
+    gL.locOccupied.update({loc:True for loc in gL.locContents.keys()}) # make sure these reflect the occupied locs
+    import ipdb
+    ipdb.set_trace()
+    return [('moveBlocks',gL)]
+
+
+pyhop.declare_methods('createLine',createLine_m)
+
+
+
+
+
+
+
 
 
 ### methods for "get"

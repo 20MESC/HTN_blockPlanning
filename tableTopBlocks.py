@@ -58,7 +58,7 @@ print("- Define goal1:")
 
 g1 = Goal('goal1')
 g1.locContents = bidict({(1,1):'b1',(1,2):'b2',(1,3):'b3'})
-g1.locOccupied = {(x,y):False for x in range(1,4) for y in range(1,4)}
+g1.locOccupied = {loc:False for loc in s1.locContents.keys()} #locContents.keys() gives all locs
 g1.locOccupied.update({loc:True for loc in g1.locContents.keys()}) 
 g1.locRobot = (2,2)
 

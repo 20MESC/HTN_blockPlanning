@@ -119,15 +119,15 @@ def createLine_m(state,pI,pF):
     """
     Generate subtasks to create a line starting at loc given by pI and ending at loc given by pF.
     """ 
+    # uses Bresenham's Line Algorithm to compute discrete points for line
     linePointsList = get_line(pI,pF)
-    blocksList = ['b1','b2','b3']
+    # acquires list of all blocks on table from looking at all unique values mapped to locations
+    blocksList = state.locContents.values() 
 
     gL = Goal('goalLine')
     gL.locContents = bidict(zip(linePointsList,blocksList))
-    gL.locOccupied = {(x,y):False for x in range(1,4) for y in range(1,4)}
-    gL.locOccupied.update({loc:True for loc in gL.locContents.keys()}) # make sure these reflect the occupied locs
-    import ipdb
-    ipdb.set_trace()
+    gL.locOccupied = {loc:False for loc in state.locContents.keys()} # locContents.keys() gives all locs 
+    gL.locOccupied.update({loc:True for loc in gL.locContents.keys()}) 
     return [('moveBlocks',gL)]
 
 
